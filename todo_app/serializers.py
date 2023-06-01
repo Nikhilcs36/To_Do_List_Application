@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import TodoItem, Tag
+from django.utils import timezone
 
 
 def valid_len(value):
@@ -26,8 +27,13 @@ class TodoItemSerializer(serializers.ModelSerializer):
     def validate(self, data):     # object level validation
         if data['title'] == data['description']:
             raise serializers.ValidationError('title and description can not be same')
-        else:
-            return data
+
+#  check if due date is before time created
+        timestamp_created = self.instance.timestamp if self.instance else timezone.now()
+        due_date = data.get('due_date')
+        if due_date and due_date < timestamp_created.date():
+            raise serializers.ValidationError('Due Date Cannot be before Time stamp created')
+        return data
 
 
 class TagSerializer(serializers.ModelSerializer):

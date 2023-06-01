@@ -21,3 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('todo_app/', include('todo_app.urls')),  # manually added app
 ]
+
+#   configure Admin Titles
+admin.site.site_header = " To_Do_List_Application"
+admin.site.site_title = "To_Do"
