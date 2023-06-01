@@ -1,7 +1,9 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class TodoItem(models.Model):
+    objects = None  # added for avoid Unresolved attribute reference 'objects' 
     STATUS_CHOICES = (
         ('OPEN', 'Open'),
         ('WORKING', 'working'),
@@ -19,11 +21,13 @@ class TodoItem(models.Model):
     def __str__(self):
         return self.title
 
+    # def clean(self):
+    #     if self.due_date and self.due_date < self.timestamp.date():
+    #         raise ValidationError("Due Date cannot be before Timestamp created")
+
 
 class Tag(models.Model):
     value = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.value
-
-

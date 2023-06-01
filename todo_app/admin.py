@@ -14,8 +14,8 @@ class TodoItemAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('value',)
 
 
-admin.site.register(TodoItem)
-admin.site.register(Tag)
+admin.site.register(TodoItem, TodoItemAdmin)
+admin.site.register(Tag, TagAdmin)
