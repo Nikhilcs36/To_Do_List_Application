@@ -15,7 +15,7 @@ This is a Django-based Todo application that allows users to create, read, updat
 1. Clone the repository:
   git clone https://github.com/Nikhilcs36/To_Do_List_Application.git
 
-  cd To_Do_List_Application
+    cd To_Do_List_Application
 
 2. Install the required dependencies:
   pip install -r requirements.txt
