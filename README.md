@@ -13,22 +13,18 @@ This is a Django-based Todo application that allows users to create, read, updat
 ## Installation
 
 1. Clone the repository:
-
-git clone https://github.com/Nikhilcs36/To_Do_List_Application.git
+  git clone https://github.com/Nikhilcs36/To_Do_List_Application.git
 
 cd To_Do_List_Application
 
 2. Install the required dependencies:
-
-pip install -r requirements.txt
+  pip install -r requirements.txt
 
 3. Run database migrations:
-
-python manage.py migrate
+  python manage.py migrate
 
 4. Start the development server:
-
-python manage.py runserver
+  python manage.py runserver
 
 ## API Endpoints
 
@@ -77,7 +73,7 @@ python manage.py createsuperuser
 2. Start the development server:
 python manage.py runserver
 
-3.Access the admin interface by visiting http://localhost:8000/admin in your web browser.
+3. Access the admin interface by visiting http://localhost:8000/admin in your web browser.
 
 ## License
 
