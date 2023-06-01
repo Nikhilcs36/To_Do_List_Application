@@ -3,13 +3,9 @@ from .models import TodoItem, Tag
 
 
 class TodoItemAdmin(admin.ModelAdmin):
-    list_display = ('title', 'timestamp', 'status')
+    list_display = ('id', 'title', 'timestamp', 'due_date', 'status')
     list_filter = ('status',)
-    search_fields = ('title', 'description')
-    fieldsets = (
-        ('Task Details', {'fields': ('title', 'description')}),
-        ('Additional Info', {'fields': ('due_date', 'tags', 'status')}),
-    )
+    search_fields = ('id', 'title', 'description')
     readonly_fields = ('timestamp',)
 
 

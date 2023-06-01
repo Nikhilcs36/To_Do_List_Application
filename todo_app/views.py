@@ -18,11 +18,11 @@ class ReadAllTodoItemView(generics.ListAPIView):  # READ ALL
     serializer_class = TodoItemSerializer
 
 
-class UpdateTodoItemView(generics.UpdateAPIView):  # UPDATE
+class UpdateTodoItemView(generics.RetrieveUpdateAPIView):  # UPDATE
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
 
 
-class DeleteTodoItemView(generics.DestroyAPIView):  # DELETE
+class DeleteTodoItemView(generics.RetrieveDestroyAPIView):  # DELETE
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer

@@ -3,6 +3,12 @@ from .models import TodoItem, Tag
 from django.utils import timezone
 
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
+
+
 def valid_len(value):
     if len(value) < 2:
         raise serializers.ValidationError('too short')
@@ -13,6 +19,7 @@ def valid_len(value):
 class TodoItemSerializer(serializers.ModelSerializer):
     title = serializers.CharField(validators=[valid_len])
     description = serializers.CharField(validators=[valid_len])
+    tags = serializers.SlugRelatedField(many=True, slug_field='value', queryset=Tag.objects.all())
 
     class Meta:
         model = TodoItem
@@ -34,9 +41,3 @@ class TodoItemSerializer(serializers.ModelSerializer):
         if due_date and due_date < timestamp_created.date():
             raise serializers.ValidationError('Due Date Cannot be before Time stamp created')
         return data
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'

@@ -28,6 +28,7 @@ class TodoItem(models.Model):
 
 
 class Tag(models.Model):
+    objects = None
     value = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
