@@ -2,6 +2,28 @@
 
 This is a Django-based Todo application that allows users to create, read, update, and delete todo items. The application provides a RESTful API for managing todo items and uses Django's built-in models, views, serializers, and the Django REST framework.
 
+The app includes the following validations to ensure data integrity and enforce business logic:
+
+* Timestamp: A timestamp is automatically set when creating a new todo item. It cannot be edited by the user.
+
+* Title: The title of a todo item is limited to a maximum of 100 characters and is a mandatory field. It must be at least 2 characters long and must start with a capital letter.
+
+* Description: The description of a todo item is limited to a maximum of 1000 characters and is a mandatory field. It must be at least 2  characters long.
+
+* Due Date: The due date of a todo item is an optional field. If provided, it must be later than the timestamp created.
+
+* Tag: Tags can be added to a todo item, allowing users to categorize their tasks. Multiple tags can be added to the same item, and  duplicate tags with the same value are saved only once.
+
+* Status: The status of a task can be one of the following values: OPEN (default), WORKING, DONE, or OVERDUE. The status field is a       mandatory field and helps track the progress of a task.
+
+The Django admin interface is enabled for easy management of todo items, providing appropriate validation checks for the fields mentioned above. The interface includes a changelist view with filters for efficient browsing and proper fieldsets for clear organization.
+
+Basic authentication is enabled for all the REST APIs, ensuring secure access to the application's functionalities.
+
+In addition to the mentioned validations, the code includes a custom save method in the TodoItem model. This method checks if the due_date exists and if it has passed the current date. If the due_date is in the past, the status of the todo item is automatically updated to 'OVERDUE' before saving.
+
+Overall, the To_Do_List_Application incorporates robust validations to maintain data consistency and enforce logical constraints, providing users with an efficient and reliable todo management system.
+
 ## Features
 
 * Create a new todo item with a title, description, due date, tags, and status
