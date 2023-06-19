@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import TodoItem, Tag
+from .models import TodoItem, Tag, ProgressNote
 from django.utils import timezone
+from django.urls import reverse
 
 
 def valid_len(value):
@@ -9,15 +10,34 @@ def valid_len(value):
     else:
         return value
     
+
+class ProgressNoteSerializer(serializers.ModelSerializer):
+    todotask = serializers.StringRelatedField(read_only=True)
+    author = serializers.ReadOnlyField(source='author.username') # Retrieve username attribute from the related User object
+    class Meta:
+        model = ProgressNote
+        fields = '__all__'
+    
+    
+    
 class TodoItemSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
     title = serializers.CharField(validators=[valid_len])
     description = serializers.CharField(validators=[valid_len])
     tags = serializers.SlugRelatedField(many=True, slug_field='tag_name', queryset=Tag.objects.all())
+    progress_note = serializers.SerializerMethodField()
 
     class Meta:
         model = TodoItem
         fields = '__all__'
+        
+    def get_progress_note(self, obj):
+        progress_note = ProgressNote.objects.filter(todotask=obj)[:1]
+        request = self.context.get('request')
+        return {
+            "progress_note": ProgressNoteSerializer(progress_note, many=True).data,
+            "all_progress_note_link": request.build_absolute_uri(reverse('progress_note_list', kwargs={'todotask_id':obj.id}))
+        }
 
     def validate_title(self, value):  # field level validation
         if not value[0].isupper():

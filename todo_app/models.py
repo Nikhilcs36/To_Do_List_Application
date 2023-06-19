@@ -36,3 +36,12 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.tag_name
+
+class ProgressNote(models.Model):
+    progress_note = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_now_add=True)
+    todotask = models.ForeignKey(TodoItem, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.todotask

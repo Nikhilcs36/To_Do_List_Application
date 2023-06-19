@@ -1,10 +1,11 @@
 from rest_framework import generics
-from .models import TodoItem, Tag
-from .serializers import TodoItemSerializer, TagSerializer
+from .models import TodoItem, Tag, ProgressNote
+from .serializers import TodoItemSerializer, TagSerializer, ProgressNoteSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 
 class TagListCreateView(generics.ListCreateAPIView):
@@ -90,4 +91,18 @@ class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'message':'No items found in the database'}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+class ProgressNoteListCreateView(generics.ListCreateAPIView):
+    queryset = ProgressNote.objects.all()
+    serializer_class =ProgressNoteSerializer
+    
+    def get_queryset(self):
+        todotask_id = self.kwargs.get('todotask_id')
+        return ProgressNote.objects.filter(todotask_id=todotask_id)
+    
+    def perform_create(self, serializer):
+        todotask_id = self.kwargs.get('todotask_id')
+        todotask = get_object_or_404(TodoItem, id=todotask_id)
+        serializer.save(author=self.request.user, todotask=todotask)
         
