@@ -32,12 +32,15 @@ class TodoItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def get_progress_note(self, obj):
-        progress_note = ProgressNote.objects.filter(todotask=obj)[:1]
+        progress_note = ProgressNote.objects.filter(todotask=obj).order_by('-date_created')[:2]
         request = self.context.get('request')
-        return {
-            "progress_note": ProgressNoteSerializer(progress_note, many=True).data,
-            "all_progress_note_link": request.build_absolute_uri(reverse('progress_note_list', kwargs={'todotask_id':obj.id}))
-        }
+        if progress_note.exists():
+            return {
+                "progress_note": ProgressNoteSerializer(progress_note, many=True).data,
+                "all_progress_note_link": request.build_absolute_uri(reverse('progress_note_list', kwargs={'todotask_id':obj.id}))
+            }
+        else:
+            return None
 
     def validate_title(self, value):  # field level validation
         if not value[0].isupper():
