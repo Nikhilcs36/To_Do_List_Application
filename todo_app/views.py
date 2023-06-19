@@ -27,9 +27,16 @@ class TagListCreateView(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
+    
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    
+    def get_object(self):
+        try:  # Try to retrieve the object using the parent class method
+            return super().get_object() 
+        except Http404:
+            return None # If object is not found, return None instead of raising Http404
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -39,7 +46,6 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'message':'No Tag found in the database'}, status=status.HTTP_404_NOT_FOUND)
-    
     
 
     
@@ -62,6 +68,8 @@ class TodoListCreateView(generics.ListCreateAPIView):
         serializer.save(author=self.request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    
     
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()

@@ -17,7 +17,7 @@ class TodoItem(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
     due_date = models.DateField(blank=True, null=True)
-    tags = models.ManyToManyField('Tag', blank=True)
+    tags = models.ManyToManyField('Tag', blank=True, related_name="todo")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='OPEN')
 
     def __str__(self):

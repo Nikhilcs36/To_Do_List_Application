@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import TodoItem, Tag
 from django.utils import timezone
 
+
 def valid_len(value):
     if len(value) < 2:
         raise serializers.ValidationError('too short')
@@ -37,8 +38,9 @@ class TodoItemSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
-    todo = TodoItemSerializer(many=True)
+    author = serializers.StringRelatedField(read_only=True)
+    tag_name = serializers.CharField()
+    todo = TodoItemSerializer(many=True, read_only=True)
     class Meta:
         model = Tag
         fields = '__all__'
