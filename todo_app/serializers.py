@@ -14,6 +14,7 @@ def valid_len(value):
 class ProgressNoteSerializer(serializers.ModelSerializer):
     todotask = serializers.StringRelatedField(read_only=True)
     author = serializers.ReadOnlyField(source='author.username') # Retrieve username attribute from the related User object
+    
     class Meta:
         model = ProgressNote
         fields = '__all__'
@@ -31,6 +32,7 @@ class TodoItemSerializer(serializers.ModelSerializer):
         model = TodoItem
         fields = '__all__'
         
+        #nested serializer
     def get_progress_note(self, obj):
         progress_note = ProgressNote.objects.filter(todotask=obj).order_by('-date_created')[:2]
         request = self.context.get('request')

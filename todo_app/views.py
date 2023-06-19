@@ -101,8 +101,14 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
         todotask_id = self.kwargs.get('todotask_id')
         return ProgressNote.objects.filter(todotask_id=todotask_id)
     
+    def get(self, request, *args, **kwargs):
+        todotask_id = self.kwargs.get('todotask_id')
+        todotask = get_object_or_404(TodoItem, id=todotask_id)
+
+        serializer = TodoItemSerializer(todotask, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
     def perform_create(self, serializer):
         todotask_id = self.kwargs.get('todotask_id')
         todotask = get_object_or_404(TodoItem, id=todotask_id)
         serializer.save(author=self.request.user, todotask=todotask)
-        
