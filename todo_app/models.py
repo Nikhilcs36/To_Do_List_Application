@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class TodoItem(models.Model):
@@ -12,6 +13,7 @@ class TodoItem(models.Model):
     )
 
     timestamp = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
     due_date = models.DateField(blank=True, null=True)
@@ -29,7 +31,8 @@ class TodoItem(models.Model):
 
 class Tag(models.Model):
     objects = None
-    value = models.CharField(max_length=100, unique=True)
-
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    tag_name = models.CharField(max_length=100, unique=True)
+    
     def __str__(self):
-        return self.value
+        return self.tag_name

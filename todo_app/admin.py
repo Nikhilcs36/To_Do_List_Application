@@ -3,14 +3,14 @@ from .models import TodoItem, Tag
 
 
 class TodoItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'timestamp', 'due_date', 'status')
+    list_display = ('id', 'author', 'title', 'timestamp', 'due_date', 'status')
     list_filter = ('status',)
     search_fields = ('id', 'title', 'description')
     readonly_fields = ('timestamp',)
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('value',)
+    list_display = ('tag_name','author')
 
 
 admin.site.register(TodoItem, TodoItemAdmin)
