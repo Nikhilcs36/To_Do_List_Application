@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'todo_app',  # manually added app
     'rest_framework',  # manually added django third party packages
+    'rest_framework.authtoken', # manually added token-based HTTP Authentication scheme
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ]
 }

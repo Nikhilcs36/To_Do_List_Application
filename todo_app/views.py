@@ -8,7 +8,7 @@ from django.http import Http404
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrReadonly, IsOwnerOrSuperuser
+from .Permissions import IsOwnerOrReadonly
 from rest_framework import serializers
 
 
@@ -59,7 +59,7 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
 class TodoListCreateView(generics.ListCreateAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrSuperuser]
+    permission_classes = [IsAuthenticated]
     
     
     def list(self, request , *args, **kwargs):
