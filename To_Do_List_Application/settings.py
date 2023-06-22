@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'todo_app',  # manually added app
     'rest_framework',  # manually added django third party packages
     'rest_framework.authtoken', # manually added token-based HTTP Authentication scheme
+    'account', # manually added app
 ]
 
 MIDDLEWARE = [
