@@ -5,12 +5,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.http import Http404
+from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
+from .Permissions import IsOwnerOrReadonly, IsOwnerOrSuperuser
+from rest_framework import serializers
 
 
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -32,6 +37,7 @@ class TagListCreateView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [IsOwnerOrReadonly]
     
     def get_object(self):
         try:  # Try to retrieve the object using the parent class method
@@ -53,6 +59,8 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
 class TodoListCreateView(generics.ListCreateAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperuser]
+    
     
     def list(self, request , *args, **kwargs):
         queryset = self.get_queryset()
@@ -75,13 +83,15 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
+    permission_classes = [IsOwnerOrReadonly]
     # lookup_field ='id'
     
-    def get_object(self):
-        try:  # Try to retrieve the object using the parent class method
+    # Override the get_object() method to handle the case when the object is not found
+    def get_object(self): 
+        try: 
             return super().get_object() 
         except Http404:
-            return None # If object is not found, return None instead of raising Http404
+            return None 
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -96,19 +106,32 @@ class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
 class ProgressNoteListCreateView(generics.ListCreateAPIView):
     queryset = ProgressNote.objects.all()
     serializer_class =ProgressNoteSerializer
+    permission_classes = [IsAuthenticated]
+    
     
     def get_queryset(self):
         todotask_id = self.kwargs.get('todotask_id')
-        return ProgressNote.objects.filter(todotask_id=todotask_id)
-    
-    def get(self, request, *args, **kwargs):
-        todotask_id = self.kwargs.get('todotask_id')
-        todotask = get_object_or_404(TodoItem, id=todotask_id)
-
-        serializer = TodoItemSerializer(todotask, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        queryset = ProgressNote.objects.filter(todotask_id=todotask_id)
+        
+        if not queryset.exists():
+            raise NotFound(detail="No ProgressNote instances found for the provided todotask_id.")
+        return queryset
     
     def perform_create(self, serializer):
         todotask_id = self.kwargs.get('todotask_id')
         todotask = get_object_or_404(TodoItem, id=todotask_id)
         serializer.save(author=self.request.user, todotask=todotask)
+        
+class ProgressNoteDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProgressNote.objects.all()
+    serializer_class = ProgressNoteSerializer
+    permission_classes = [IsOwnerOrReadonly]
+    
+    def get_object(self):
+        progress_note_id = self.kwargs.get('progress_note_id')
+        progress_note = get_object_or_404(ProgressNote, id = progress_note_id)
+        
+        todotask_id = self.kwargs.get('todotask_id')
+        if progress_note.todotask.id != todotask_id:
+            raise serializers.ValidationError({'message':'This progress note is not related to the requested todo item'})
+        return progress_note
