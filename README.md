@@ -53,34 +53,34 @@ Overall, the To_Do_List_Application incorporates robust validations to maintain 
 The following API endpoints are available:
 
 * Todo List
-- Endpoint: /api/todo_list/
-- Method: GET, POST
-- Description: Retrieve a list of todos or create a new todo.
+ Endpoint: /api/todo_list/
+ Method: GET, POST
+ Description: Retrieve a list of todos or create a new todo.
 
 * Todo Detail
-- Endpoint: /api/todo_detail/<int:pk>/
-- Method: GET, PUT, DELETE
-- Description: Retrieve, update, or delete a specific todo based on its primary key.
+ Endpoint: /api/todo_detail/<int:pk>/
+ Method: GET, PUT, DELETE
+ Description: Retrieve, update, or delete a specific todo based on its primary key.
 
 * Tag List
-- Endpoint: /api/tag_list/
-- Method: GET, POST
-- Description: Retrieve a list of tags or create a new tag.
+ Endpoint: /api/tag_list/
+ Method: GET, POST
+ Description: Retrieve a list of tags or create a new tag.
 
 * Tag Detail
-- Endpoint: /api/tag_detail/<int:pk>/
-- Method: GET, PUT, DELETE
-- Description: Retrieve, update, or delete a specific tag based on its primary key.
+ Endpoint: /api/tag_detail/<int:pk>/
+ Method: GET, PUT, DELETE
+ Description: Retrieve, update, or delete a specific tag based on its primary key.
 
 * Progress Note List
-- Endpoint: /api/progress_note_list/<int:todotask_id>/
-- Method: GET, POST
-- Description: Retrieve a list of progress notes for a specific todo task or create a new progress note.
+ Endpoint: /api/progress_note_list/<int:todotask_id>/
+ Method: GET, POST
+ Description: Retrieve a list of progress notes for a specific todo task or create a new progress note.
 
 * Progress Note Detail
-- Endpoint: /api/progress_note_detail/<int:todotask_id>/<int:progress_note_id>/
-- Method: GET, PUT, DELETE
-- Description: Retrieve, update, or delete a specific progress note for a todo task based on their IDs.
+ Endpoint: /api/progress_note_detail/<int:todotask_id>/<int:progress_note_id>/
+ Method: GET, PUT, DELETE
+ Description: Retrieve, update, or delete a specific progress note for a todo task based on their IDs.
 
 
 ## Usage
