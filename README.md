@@ -52,20 +52,36 @@ Overall, the To_Do_List_Application incorporates robust validations to maintain 
 
 The following API endpoints are available:
 
-* Create Todo Item: POST /api/create/
-Create a new todo item by providing the necessary data in the request body.
+# Todo List
+- Endpoint: /api/todo_list/
+- Method: GET, POST
+- Description: Retrieve a list of todos or create a new todo.
 
-* Read Todo Item: GET /api/read/<int:pk>/
-Retrieve a specific todo item by its ID. Replace <int:pk> with the actual ID of the todo item.
+# Todo Detail
+- Endpoint: /api/todo_detail/<int:pk>/
+- Method: GET, PUT, DELETE
+- Description: Retrieve, update, or delete a specific todo based on its primary key.
 
-* Read All Todo Items: GET /api/read_all/
-Retrieve all todo items.
+# Tag List
+- Endpoint: /api/tag_list/
+- Method: GET, POST
+- Description: Retrieve a list of tags or create a new tag.
 
-* Update Todo Item: PUT /api/update/<int:pk>/
-Update an existing todo item by providing the updated data in the request body. Replace <int:pk> with the actual ID of the todo item.
+# Tag Detail
+- Endpoint: /api/tag_detail/<int:pk>/
+- Method: GET, PUT, DELETE
+- Description: Retrieve, update, or delete a specific tag based on its primary key.
 
-* Delete Todo Item: DELETE /api/delete/<int:pk>/
-Delete a todo item by its ID. Replace <int:pk> with the actual ID of the todo item.
+# Progress Note List
+- Endpoint: /api/progress_note_list/<int:todotask_id>/
+- Method: GET, POST
+- Description: Retrieve a list of progress notes for a specific todo task or create a new progress note.
+
+# Progress Note Detail
+- Endpoint: /api/progress_note_detail/<int:todotask_id>/<int:progress_note_id>/
+- Method: GET, PUT, DELETE
+- Description: Retrieve, update, or delete a specific progress note for a todo task based on their IDs.
+
 
 ## Usage
 
