@@ -8,7 +8,7 @@ from django.http import Http404
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrReadonly
+from .Permissions import IsOwnerOrSuperuser
 from rest_framework import serializers
 
 
@@ -37,7 +37,7 @@ class TagListCreateView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsOwnerOrReadonly]
+    permission_classes = [IsOwnerOrSuperuser]
     
     def get_object(self):
         try:  # Try to retrieve the object using the parent class method
@@ -61,6 +61,12 @@ class TodoListCreateView(generics.ListCreateAPIView):
     serializer_class = TodoItemSerializer
     permission_classes = [IsAuthenticated]
     
+    def get_queryset(self):
+        username = self.request.user
+        if username.is_superuser:
+            return TodoItem.objects.all()
+        else:
+            return TodoItem.objects.filter(author=username)
     
     def list(self, request , *args, **kwargs):
         queryset = self.get_queryset()
@@ -83,7 +89,7 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
-    permission_classes = [IsOwnerOrReadonly]
+    permission_classes = [IsOwnerOrSuperuser]
     # lookup_field ='id'
     
     # Override the get_object() method to handle the case when the object is not found
@@ -125,7 +131,7 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
 class ProgressNoteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProgressNote.objects.all()
     serializer_class = ProgressNoteSerializer
-    permission_classes = [IsOwnerOrReadonly]
+    permission_classes = [IsOwnerOrSuperuser]
     
     def get_object(self):
         progress_note_id = self.kwargs.get('progress_note_id')
