@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.http import Http404
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrSuperuser
+from .Permissions import IsOwnerOrSuperUserReadonly
 from rest_framework import serializers
 
 
@@ -37,7 +37,7 @@ class TagListCreateView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsOwnerOrSuperuser]
+    permission_classes = [IsOwnerOrSuperUserReadonly]
     
     def get_object(self):
         try:  # Try to retrieve the object using the parent class method
@@ -57,7 +57,7 @@ class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     
 class TodoListCreateView(generics.ListCreateAPIView):
-    queryset = TodoItem.objects.all()
+    # queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
     permission_classes = [IsAuthenticated]
     
@@ -89,7 +89,7 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
-    permission_classes = [IsOwnerOrSuperuser]
+    permission_classes = [IsOwnerOrSuperUserReadonly]
     # lookup_field ='id'
     
     # Override the get_object() method to handle the case when the object is not found
@@ -110,14 +110,18 @@ class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
         
         
 class ProgressNoteListCreateView(generics.ListCreateAPIView):
-    queryset = ProgressNote.objects.all()
+    # queryset = ProgressNote.objects.all()
     serializer_class =ProgressNoteSerializer
     permission_classes = [IsAuthenticated]
     
     
     def get_queryset(self):
         todotask_id = self.kwargs.get('todotask_id')
-        queryset = ProgressNote.objects.filter(todotask_id=todotask_id)
+        username = self.request.user
+        if username.is_superuser:
+            queryset = ProgressNote.objects.filter(todotask_id=todotask_id)
+        else:
+            queryset = ProgressNote.objects.filter(todotask_id=todotask_id, author=username)
         
         if not queryset.exists():
             raise NotFound(detail="No ProgressNote instances found for the provided todotask_id.")
@@ -126,12 +130,17 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         todotask_id = self.kwargs.get('todotask_id')
         todotask = get_object_or_404(TodoItem, id=todotask_id)
+        
+        if todotask.author != self.request.user:
+            raise PermissionDenied("You are not authorized to create a new progress note on this task")
+        
         serializer.save(author=self.request.user, todotask=todotask)
+        
         
 class ProgressNoteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProgressNote.objects.all()
     serializer_class = ProgressNoteSerializer
-    permission_classes = [IsOwnerOrSuperuser]
+    permission_classes = [IsOwnerOrSuperUserReadonly]
     
     def get_object(self):
         progress_note_id = self.kwargs.get('progress_note_id')
