@@ -8,7 +8,7 @@ from django.http import Http404
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrSuperUserReadonly, IsOwnerOrSuperUserReadonlyProgressNote
+from .Permissions import IsOwnerOrSuperUserReadonly, IsOwnerOrSuperUserReadonlyProgressNote, IsOwnerOrSuperUserReadonlyProgressNoteDetail
 from rest_framework import serializers
 
 
@@ -147,13 +147,13 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
 class ProgressNoteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProgressNote.objects.all()
     serializer_class = ProgressNoteSerializer
-    permission_classes = [IsOwnerOrSuperUserReadonly]
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonlyProgressNoteDetail]
     
     def get_object(self):
         progress_note_id = self.kwargs.get('progress_note_id')
         progress_note = get_object_or_404(ProgressNote, id = progress_note_id)
         
-        todotask_id = self.kwargs.get('todotask_id')
-        if progress_note.todotask.id != todotask_id:
-            raise serializers.ValidationError({'message':'This progress note is not related to the requested todo item'})
+        # todotask_id = self.kwargs.get('todotask_id')
+        # if progress_note.todotask.id != todotask_id:
+        #     raise serializers.ValidationError({'message':'This progress note is not related to the requested todo item'})
         return progress_note
