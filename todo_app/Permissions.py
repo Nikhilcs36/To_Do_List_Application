@@ -1,6 +1,7 @@
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 from . models import TodoItem
+from rest_framework.exceptions import NotFound
 
 class IsOwnerOrSuperUserReadonly(permissions.BasePermission):
     
@@ -19,7 +20,11 @@ class IsOwnerOrSuperUserReadonlyProgressNote(permissions.BasePermission):
     def has_permission(self, request, view):
         
         todotask_id = view.kwargs.get('todotask_id')
-        todotask = get_object_or_404(TodoItem, id=todotask_id)
+        try:
+            todotask = get_object_or_404(TodoItem, id=todotask_id)
+        except:
+            raise NotFound("Todo item does not exist")
+        
         progressnote_author = todotask.author
         
         if request.method in permissions.SAFE_METHODS and progressnote_author == request.user:

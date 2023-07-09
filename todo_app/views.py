@@ -44,7 +44,7 @@ class TagListCreateView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsOwnerOrSuperUserReadonly]
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonly]
     
     def get_object(self):
         try:  # Try to retrieve the object using the parent class method
@@ -96,7 +96,7 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
-    permission_classes = [IsOwnerOrSuperUserReadonly]
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonly]
     # lookup_field ='id'
     
     # Override the get_object() method to handle the case when the object is not found
@@ -138,8 +138,8 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
         todotask_id = self.kwargs.get('todotask_id')
         todotask = get_object_or_404(TodoItem, id=todotask_id)
         
-        if todotask.author != self.request.user:
-            raise PermissionDenied("You are not authorized to create a new progress note on this task")
+        # if todotask.author != self.request.user:
+        #     raise PermissionDenied("You are not authorized to create a new progress note on this task")
         
         serializer.save(author=self.request.user, todotask=todotask)
         
