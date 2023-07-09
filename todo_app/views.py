@@ -8,7 +8,7 @@ from django.http import Http404
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrSuperUserReadonly
+from .Permissions import IsOwnerOrSuperUserReadonly, IsOwnerOrSuperUserReadonlyProgressNote
 from rest_framework import serializers
 
 
@@ -16,6 +16,13 @@ class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        username = self.request.user
+        if username.is_superuser:
+            return Tag.objects.all()
+        else:
+            return Tag.objects.filter(author=username)
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -112,7 +119,7 @@ class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
 class ProgressNoteListCreateView(generics.ListCreateAPIView):
     # queryset = ProgressNote.objects.all()
     serializer_class =ProgressNoteSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonlyProgressNote]
     
     
     def get_queryset(self):
