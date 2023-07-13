@@ -5,11 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.http import Http404
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from .Permissions import IsOwnerOrSuperUserReadonly, IsOwnerOrSuperUserReadonlyProgressNote, IsOwnerOrSuperUserReadonlyProgressNoteDetail
-from rest_framework import serializers
+from .Permissions import IsOwnerOrSuperUserReadonlyTodoDetail, IsOwnerOrSuperUserReadonlyTagDetail, IsOwnerOrSuperUserReadonlyProgressNote, IsOwnerOrSuperUserReadonlyProgressNoteDetail
 
 
 class TagListCreateView(generics.ListCreateAPIView):
@@ -44,23 +43,16 @@ class TagListCreateView(generics.ListCreateAPIView):
 class TagDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonly]
-    
-    def get_object(self):
-        try:  # Try to retrieve the object using the parent class method
-            return super().get_object() 
-        except Http404:
-            return None # If object is not found, return None instead of raising Http404
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonlyTagDetail]
     
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        try:
+            instance = self.get_object()
+        except Http404:
+            return Response({'message': 'No items found in the database'}, status=status.HTTP_404_NOT_FOUND)
         
-        if instance is not None:
-            serializer = self.get_serializer(instance)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'message':'No Tag found in the database'}, status=status.HTTP_404_NOT_FOUND)
-    
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     
 class TodoListCreateView(generics.ListCreateAPIView):
@@ -96,25 +88,18 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonly]
+    permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonlyTodoDetail]
     # lookup_field ='id'
-    
-    # Override the get_object() method to handle the case when the object is not found
-    def get_object(self): 
-        try: 
-            return super().get_object() 
-        except Http404:
-            return None 
-    
+        
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+        try:
+            instance = self.get_object()
+        except Http404:
+            return Response({'message': 'No items found in the database'}, status=status.HTTP_404_NOT_FOUND)
         
-        if instance is not None:
-            serializer = self.get_serializer(instance)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'message':'No items found in the database'}, status=status.HTTP_404_NOT_FOUND)
-        
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)   
+  
         
 class ProgressNoteListCreateView(generics.ListCreateAPIView):
     # queryset = ProgressNote.objects.all()
@@ -130,8 +115,8 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
         else:
             queryset = ProgressNote.objects.filter(todotask_id=todotask_id, author=username)
         
-        if not queryset.exists():
-            raise NotFound(detail="No ProgressNote instances found for the provided todotask_id.")
+        # if not queryset.exists():
+        #     raise NotFound(detail="No ProgressNote instances found for the provided todotask_id.")
         return queryset
     
     def perform_create(self, serializer):
