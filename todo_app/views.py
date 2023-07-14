@@ -9,12 +9,15 @@ from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from .Permissions import IsOwnerOrSuperUserReadonlyTodoDetail, IsOwnerOrSuperUserReadonlyTagDetail, IsOwnerOrSuperUserReadonlyProgressNote, IsOwnerOrSuperUserReadonlyProgressNoteDetail
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['tag_name']
     
     def get_queryset(self):
         username = self.request.user
@@ -23,14 +26,14 @@ class TagListCreateView(generics.ListCreateAPIView):
         else:
             return Tag.objects.filter(author=username)
     
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = TagSerializer(queryset, many=True, context={'request':request})
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.get_queryset()
+    #     serializer = TagSerializer(queryset, many=True, context={'request':request})
         
-        if queryset.exists():
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        else:
-            return Response({'message':'No Tag Found in the database'})
+    #     if queryset.exists():
+    #         return Response(serializer.data,status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({'message':'No Tag Found in the database'})
         
     def create(self, request, *args, **kwargs):
         serializer = TagSerializer(data=request.data, context={'request':request})
@@ -59,6 +62,10 @@ class TodoListCreateView(generics.ListCreateAPIView):
     # queryset = TodoItem.objects.all()
     serializer_class = TodoItemSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['tags', 'status']
+    search_fields = ['^title']
+    ordering_fields = ['timestamp','due_date']
     
     def get_queryset(self):
         username = self.request.user
@@ -67,14 +74,14 @@ class TodoListCreateView(generics.ListCreateAPIView):
         else:
             return TodoItem.objects.filter(author=username)
     
-    def list(self, request , *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = TodoItemSerializer(queryset, many=True, context={'request':request})
+    # def list(self, request , *args, **kwargs):
+    #     queryset = self.get_queryset()
+    #     serializer = TodoItemSerializer(queryset, many=True, context={'request':request})
         
-        if queryset.exists():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'message':'No items in the database'}, status=status.HTTP_204_NO_CONTENT)
+    #     if queryset.exists():
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response({'message':'No items in the database'}, status=status.HTTP_204_NO_CONTENT)
         
     def create(self, request, *args, **kwargs):
         serializer = TodoItemSerializer(data=request.data, context={'request':request})

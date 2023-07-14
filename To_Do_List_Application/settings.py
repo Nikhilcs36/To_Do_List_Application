@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',  # manually added django third party packages
     'rest_framework.authtoken', # manually added token-based HTTP Authentication scheme
     'account', # manually added app
+    'django_filters', # manually added django_filters
 ]
 
 MIDDLEWARE = [
