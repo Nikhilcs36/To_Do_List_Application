@@ -65,7 +65,7 @@ class TodoItemSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(read_only=True)
     tag_name = serializers.CharField()
-    todo = TodoItemSerializer(many=True, read_only=True)
+    # todo = TodoItemSerializer(many=True, read_only=True)
     class Meta:
         model = Tag
         fields = '__all__'

@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from .Permissions import IsOwnerOrSuperUserReadonlyTodoDetail, IsOwnerOrSuperUserReadonlyTagDetail, IsOwnerOrSuperUserReadonlyProgressNote, IsOwnerOrSuperUserReadonlyProgressNoteDetail
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from . pagination import TodoListCreatePagination, ListPagination
 
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
@@ -18,6 +19,7 @@ class TagListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['tag_name']
+    pagination_class = ListPagination
     
     def get_queryset(self):
         username = self.request.user
@@ -66,6 +68,7 @@ class TodoListCreateView(generics.ListCreateAPIView):
     filterset_fields = ['tags', 'status']
     search_fields = ['^title']
     ordering_fields = ['timestamp','due_date']
+    pagination_class = TodoListCreatePagination
     
     def get_queryset(self):
         username = self.request.user
@@ -112,6 +115,7 @@ class ProgressNoteListCreateView(generics.ListCreateAPIView):
     # queryset = ProgressNote.objects.all()
     serializer_class =ProgressNoteSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrSuperUserReadonlyProgressNote]
+    pagination_class = ListPagination
     
     
     def get_queryset(self):
