@@ -5,6 +5,6 @@ urlpatterns = [
     path('api/login/', obtain_auth_token, name="login"),
     path('api/logout_user/', views.logout_user, name="logout_user"),
     path('api/register/', views.user_register_view, name="register"),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framwork')),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framwork')),
     
 ]
