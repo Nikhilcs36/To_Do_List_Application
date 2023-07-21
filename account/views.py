@@ -20,6 +20,8 @@ from django.core.mail import BadHeaderError, send_mail
 from django.core import mail
 from django.conf import settings
 from django.core.mail import EmailMessage
+# resetpassword generators
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # threading
 import threading
 
@@ -102,3 +104,54 @@ def logout_user(request):
     if request.method == "POST":
         request.user.auth_token.delete()
         return Response({'Message':'You are logged out'}, status=status.HTTP_200_OK)
+    
+    
+@api_view(["POST",])
+def request_reset_email(request):
+    if request.method == "POST":
+        email = request.data.get("email")
+        user = User.objects.filter(email=email).first()
+        
+        if user:
+            current_site = get_current_site(request)
+            email_subject = "Reset Your Password"
+            message = render_to_string("account/request-reset-email.html",{
+                "user": user,
+                "domain": "127.0.0.1:8000",
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "rest_password_token": PasswordResetTokenGenerator().make_token(user),
+            })
+            
+            email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [email])
+            EmailThread(email_message).start()
+            return Response({"message": "We have sent you an email with instructions on how to reset the password."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST",])
+def set_new_password(request, uidb64, rest_password_token):
+    if request.method == "POST":
+        password = request.data.get("password")
+        confirm_password = request.data.get("confirm_password")
+        
+        if not password or not confirm_password:
+            return Response({"error": "Please provide both password and confirm_password fields."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if password != confirm_password:
+            return Response({"error": "Password and confirm password do not match."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user_id = str(urlsafe_base64_decode(uidb64), "utf-8")
+            user = User.objects.get(pk=user_id)
+            
+            if not PasswordResetTokenGenerator().check_token(user, rest_password_token):
+                return Response({"error": "Password reset link is invalid."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(password)
+            user.save()
+            return Response({"message": "Password reset success. Please log in with your new password."}, status=status.HTTP_200_OK)
+        
+        except User.DoesNotExist:
+            return Response({"error": "User does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        
