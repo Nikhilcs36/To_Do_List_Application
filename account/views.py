@@ -15,9 +15,6 @@ from django.utils.encoding import force_bytes, DjangoUnicodeDecodeError
 # getting token from utils.py
 from .utils import TokenGenerator, generate_token
 # email 
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.core.mail import BadHeaderError, send_mail
-from django.core import mail
 from django.conf import settings
 from django.core.mail import EmailMessage
 # resetpassword generators
@@ -61,10 +58,11 @@ def user_register_view(request):
             # Create email message
             email_subject = "Activate Your Account"
             message = render_to_string('account/activate.html',{
-                'user':account,
-                'domain':'127.0.0.1:8000',
-                'uid':urlsafe_base64_encode(force_bytes(account.pk)),
-                'email_token': email_token,  
+                "user": account,
+                "domain": current_site.domain,
+                # 'domain':'127.0.0.1:8000',
+                "uid": urlsafe_base64_encode(force_bytes(account.pk)),
+                "email_token": email_token,  
             })
             email_message = EmailMessage(email_subject, message, settings.EMAIL_HOST_USER, [account.email])
             
@@ -86,6 +84,7 @@ def activate_account(request, uidb64, email_token):
     try:
         uid = str(urlsafe_base64_decode(uidb64), 'utf-8')
         user = User.objects.get(pk=uid)
+        
     except User.DoesNotExist:
         return Response({"Error": "Invalid activation link."}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -117,7 +116,8 @@ def request_reset_email(request):
             email_subject = "Reset Your Password"
             message = render_to_string("account/request-reset-email.html",{
                 "user": user,
-                "domain": "127.0.0.1:8000",
+                "domain": current_site.domain,
+                # "domain": "127.0.0.1:8000",
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "rest_password_token": PasswordResetTokenGenerator().make_token(user),
             })
