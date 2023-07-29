@@ -1,4 +1,4 @@
-# To_Do_List_Application
+# To_Do_List_Application (Token And Email Authentication)
 
 This is a Django-based Todo application that allows users to create, read, update, and delete todo items. The application provides a RESTful API for managing todo items and uses Django's built-in models, views, serializers, and the Django REST framework.
 
@@ -14,11 +14,11 @@ The app includes the following validations to ensure data integrity and enforce 
 
 * Tag: Tags can be added to a todo item, allowing users to categorize their tasks. Multiple tags can be added to the same item, and  duplicate tags with the same value are saved only once.
 
-* Status: The status of a task can be one of the following values: OPEN (default), WORKING, DONE, or OVERDUE. The status field is a       mandatory field and helps track the progress of a task.
+* Status: The status of a task can be one of the following values: OPEN (default), WORKING, DONE, or OVERDUE. The status field is a  mandatory field and helps track the progress of a task.
 
 The Django admin interface is enabled for easy management of todo items, providing appropriate validation checks for the fields mentioned above. The interface includes a changelist view with filters for efficient browsing and proper fieldsets for clear organization.
 
-Basic authentication is enabled for all the REST APIs, ensuring secure access to the application's functionalities.
+Token authentication is enabled for all the REST APIs, ensuring secure access to the application's functionalities.
 
 In addition to the mentioned validations, the code includes a custom save method in the TodoItem model. This method checks if the due_date exists and if it has passed the current date. If the due_date is in the past, the status of the todo item is automatically updated to 'OVERDUE' before saving.
 
@@ -26,11 +26,37 @@ Overall, the To_Do_List_Application incorporates robust validations to maintain 
 
 ## Features
 
+Todo :
+
 * Create a new todo item with a title, description, due date, tags, and status
 * Retrieve a specific todo item by its ID.
 * Retrieve all todo items.
 * Update an existing todo item.
 * Delete a todo item. 
+
+Tag:
+
+* Retrieve a specific tag item by its ID.
+* Retrieve all tag items.
+* Update an existing tag item.
+* Delete a tag item. 
+
+Progress Note:
+
+* Retrieve a specific Progress Note item by its ID.
+* Retrieve all Progress Note items.
+* Update an existing Progress Note.
+* Delete a Progress Note item. 
+
+Account:
+
+* login 
+* logout
+* register
+* request_reset_email
+* set_new_password
+* activate_account
+
 
 ## Installation
 
@@ -50,49 +76,8 @@ Overall, the To_Do_List_Application incorporates robust validations to maintain 
 
 ## API Endpoints
 
-The following API endpoints are available:
-
-* Todo List
- Endpoint: /api/todo_list/
-
- Method: GET, POST
- 
- Description: Retrieve a list of todos or create a new todo.
-
-* Todo Detail
- Endpoint: /api/todo_detail/<int:pk>/
-
- Method: GET, PUT, DELETE
- 
- Description: Retrieve, update, or delete a specific todo based on its primary key.
-
-* Tag List
- Endpoint: /api/tag_list/
-
- Method: GET, POST
- 
- Description: Retrieve a list of tags or create a new tag.
-
-* Tag Detail
- Endpoint: /api/tag_detail/<int:pk>/
-
- Method: GET, PUT, DELETE
- 
- Description: Retrieve, update, or delete a specific tag based on its primary key.
-
-* Progress Note List
- Endpoint: /api/progress_note_list/<int:todotask_id>/
-
- Method: GET, POST
- 
- Description: Retrieve a list of progress notes for a specific todo task or create a new progress note.
-
-* Progress Note Detail
- Endpoint: /api/progress_note_detail/<int:todotask_id>/<int:progress_note_id>/
-
- Method: GET, PUT, DELETE
- 
- Description: Retrieve, update, or delete a specific progress note for a todo task based on their IDs.
+URL for published documentation
+https://documenter.getpostman.com/view/27765893/2s9XxsWH2x
 
 
 ## Usage
@@ -128,6 +113,3 @@ python manage.py runserver
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
-
-
-
