@@ -77,7 +77,7 @@ Account:
 ## API Endpoints
 
 URL for published documentation
-https://documenter.getpostman.com/view/27765893/2s9XxsWH2x
+https://documenter.getpostman.com/view/27765893/2s9Xy3sB74
 
 
 ## Usage
