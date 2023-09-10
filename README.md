@@ -67,7 +67,7 @@ python manage.py runserver
 
 
 
-    Todo App Endpoints:
+  ## Todo App Endpoints:
 
 * Create Todo Item:
 
