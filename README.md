@@ -1,7 +1,7 @@
-## Todo List Application - Backend
+## Todo List Application - Backend (Email token verification and REST API token authentication)
 
 Description:
-This repository contains the backend code for a Todo List Application built using Django and Django Rest Framework. The Todo List Application allows users to create, manage, and track their tasks through a user-friendly REST API. This backend project serves as the foundation for the Todo List Application and handles data storage, retrieval, and manipulation through API endpoints.
+This repository contains the backend code for a Todo List Application built using Django and Django Rest Framework. The Todo List Application allows users to create, manage, and track their tasks through a user-friendly REST API. This backend project serves as the foundation for the Todo List Application and handles data storage, retrieval, and manipulation through API endpoints. Email token verification and REST API token authentication are provided for securing user accounts and API endpoints, respectively. They ensure that only authorized users can access specific resources or perform certain actions, which contributes to the overall security of the web application.
 ## Features
 
 * Todo Items Management: 
