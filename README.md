@@ -26,7 +26,7 @@ Custom pagination classes are utilized to manage the number of items displayed p
 
 * Email Threading:
 
-Our project includes a lightning-fast email threading feature that sends emails in a fraction of seconds. Say goodbye to email delays and enjoy real-time communication efficiency.
+The project includes a lightning-fast email threading feature that sends emails in a fraction of seconds. Say goodbye to email delays and enjoy real-time communication efficiency.
 
 * Django Admin Interface:
 
