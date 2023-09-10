@@ -1,7 +1,7 @@
 ## Todo List Application - Backend
 
 Description:
-This repository contains the backend code for a Todo List Application built using Django and Django Rest Framework. The Todo List Application allows users to create, manage, and track their tasks through a user-friendly API. This backend project serves as the foundation for the Todo List Application and handles data storage, retrieval, and manipulation through API endpoints.
+This repository contains the backend code for a Todo List Application built using Django and Django Rest Framework. The Todo List Application allows users to create, manage, and track their tasks through a user-friendly REST API. This backend project serves as the foundation for the Todo List Application and handles data storage, retrieval, and manipulation through API endpoints.
 ## Features
 
 * Todo Items Management: 
@@ -23,6 +23,10 @@ Custom permission classes are implemented to control access to API views based o
 * Pagination:
 
 Custom pagination classes are utilized to manage the number of items displayed per page in the API responses.
+
+* Email Threading:
+
+Our project includes a lightning-fast email threading feature that sends emails in a fraction of seconds. Say goodbye to email delays and enjoy real-time communication efficiency.
 
 * Django Admin Interface:
 
